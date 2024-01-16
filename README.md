@@ -1,7 +1,7 @@
 # KurnuCat's dotfiles
 
 ## Installing the dotfiles
-I recommend GNU Stow to manage the symlinks but you don't have to. It should be packaged with the name stow on most distributions.
+I recommend GNU Stow to manage the symlinks but you don't have to use it. It should be packaged with the name stow on most distributions.
 
 Stow will automatically symlink the contents of each "package" into the parent directory from where it is invoked, that's why you should clone this repository directly into your home directory. The `--restow` parameter applies the stow command to every subdirectory in the current directory, it also restowes packages that were previously stowed.
 
