@@ -56,7 +56,7 @@
   :ensure t
   :config
   (setq dashboard-banner-logo-title "Welcome to Moisio Emacs!")
-  (setq dashboard-startup-banner "/home/user/moisio.png")
+  (setq dashboard-startup-banner "logo")
   (setq dashboard-center-content t)
   (setq dashboard-items '((recents  . 5)
                           (bookmarks . 5)
