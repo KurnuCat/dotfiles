@@ -1,9 +1,3 @@
-;; Prevent garbage collection and temporarily unset file-name-handler-alist
-(defvar last-file-name-handler-alist file-name-handler-alist)
-(setq gc-cons-threshold 402653184
-      gc-cons-percentage 0.6
-      file-name-handler-alist nil)
-
 ;; Set up package.el to work with MELPA
 (require 'package)
 (add-to-list 'package-archives
@@ -56,7 +50,7 @@
   :ensure t
   :config
   (setq dashboard-banner-logo-title "Welcome to Moisio Emacs!")
-  (setq dashboard-startup-banner "logo")
+  (setq dashboard-startup-banner 1)
   (setq dashboard-center-content t)
   (setq dashboard-items '((recents  . 5)
                           (bookmarks . 5)
@@ -176,15 +170,6 @@
 
 ;; Electric-pairs
 (add-hook 'prog-mode-hook 'electric-pair-mode)
-
-;; after startup, it is important you reset this to some reasonable default. A large 
-;; gc-cons-threshold will cause freezing and stuttering during long-term 
-;; interactive use. I find these are nice defaults:
-(add-hook 'emacs-startup-hook
-  (setq gc-cons-threshold 16777216
-        gc-cons-percentage 0.1
-        file-name-handler-alist last-file-name-handler-alist))
-(custom-set-variables
 
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
