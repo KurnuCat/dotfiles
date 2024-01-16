@@ -1,0 +1,25 @@
+# general settings
+auto-reload yes
+max-items 50
+
+# external browser
+macro v set browser "setsid -f mpv --really-quiet --no-terminal" ; open-in-browser ; set browser "xdg-open"
+
+# unbind keys 
+unbind-key ENTER
+unbind-key j 
+unbind-key k 
+unbind-key j 
+unbind-key k
+
+# bind keys - vim style
+bind-key j down
+bind-key k up
+bind-key l open
+bind-key h quit
+
+# uncomment these if you want to use tor
+#use-proxy yes
+#proxy-type socks5h
+#proxy localhost:9050
+ 
