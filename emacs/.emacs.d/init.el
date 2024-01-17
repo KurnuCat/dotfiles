@@ -39,9 +39,16 @@
   (css-mode-hook . rainbow-mode)
   (js-mode-hook . rainbow-mode))
 
-(setq pdf-viewer "zathura")
+(setq pdf-viewer "zathura") ;; set the pdf viewer to zathura 
+(setq doc-view-continuous t) ;; continuous scrolling of pdf documents
 
-;; project.el
+(use-package auctex
+  :ensure t
+  :config
+  (setq TeX-view-program-list '(("zathura" "zathura %o")))
+  (setq TeX-view-program-selection '((output-pdf "zathura"))))
+
+;; Built-in alternative to projectile.el
 (use-package project
   :ensure t)
 
@@ -55,8 +62,8 @@
   (setq dashboard-items '((recents  . 5)
                           (bookmarks . 5)
                           (projects . 5)
-                          (agenda . 5)
-                          (registers . 5)))
+                          (agenda . 5)))
+  (setq dashboard-projects-backend 'project-el)
 
   (setq dashboard-show-shortcuts t)
   (dashboard-setup-startup-hook))
@@ -108,11 +115,16 @@
   :config
   (icomplete-mode t))
 
-;; Ranger.el
-(use-package ranger
-  :ensure t)
+;; Open videos with mpv
+(defun open-in-mpv ()
+  (interactive)
+  (let ((file (dired-get-filename)))
+    (start-process "mpv" nil "mpv" file)))
 
-;; org-mode
+(eval-after-load "dired"
+  '(define-key dired-mode-map (kbd "C-c C-o") 'open-in-mpv))
+
+;; Org 
 (use-package org
   :ensure t
   :bind
@@ -120,7 +132,7 @@
    ("C-c a" . org-agenda)
    ("C-c c" . org-capture)))
 
-(setq org-agenda-files '("~/sync/org")) ;; org-agenda files
+(setq org-agenda-files '("~/sync/org")) ;; org-agenda file path
 
 ;; Define custom agenda views
 (setq org-agenda-custom-commands
@@ -130,7 +142,7 @@
 
 ;; Set agenda start day to today
 (setq org-agenda-start-on-weekday nil)
-(setq org-agenda-start-day nil)
+(setq org-agenda-start-day 0)
 
 (use-package org-modern
   :ensure t
@@ -144,6 +156,13 @@
   :mode ("README\\.md\\'" . gfm-mode)
   :mode ("\\.md\\'" . markdown-mode)
   :init (setq markdown-command "multimarkdown"))
+
+(use-package pandoc-mode
+  :ensure t
+  :config
+  (setq markdown-command "pandoc")
+  :hook
+  ('markdown-mode-hook . pandoc-mode))
 
 ;; Eglot, more minimal alternative to lsp-mode that is included with newer versions of emacs
 (use-package eglot
@@ -172,15 +191,15 @@
 (add-hook 'prog-mode-hook 'electric-pair-mode)
 
 (custom-set-variables
-
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  '(icomplete-mode t)
  '(ispell-dictionary nil)
+ '(org-agenda-files nil)
  '(package-selected-packages
-   '(evil-surround move-text rainbow-mode writeroom-mode treemacs-evil key-chord markdown-mode dashboard rainbow-delimiters eglot image-dired+ magit evil-collection ranger treemacs ## company org-modern evil)))
+   '(pandoc-mode auctex evil-surround move-text rainbow-mode writeroom-mode treemacs-evil key-chord markdown-mode dashboard rainbow-delimiters eglot image-dired+ magit evil-collection treemacs ## company org-modern evil)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
