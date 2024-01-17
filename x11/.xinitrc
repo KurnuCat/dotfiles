@@ -1,6 +1,6 @@
 #!/bin/sh
 unclutter & # Mouse hider
-nitrogen --restore & # Wallpaper 
+nitrogen --restore & # Wallpaper
 
 # Statusbar script
 while true; do
@@ -8,10 +8,10 @@ while true; do
 	sleep 10
 done &
 
-# set your own coordinates for redshift 
+# set your own coordinates for redshift
 # redshift -l
 
-xcompmgr & # Compositor 
+xcompmgr & # Compositor
 fcitx -d & # Input method engine for Japanese
 udiskie & # Automatic disk mounting daemon
 dunst & # Notification daemon
