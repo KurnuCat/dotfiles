@@ -1,4 +1,6 @@
-;; Set up package.el to work with MELPA
+;; Package manager configuration --------------------------------------------------------------
+
+;; Initialize package sources
 (require 'package)
 (add-to-list 'package-archives
              '("melpa" . "https://melpa.org/packages/"))
@@ -10,17 +12,32 @@
   (package-install 'use-package))
 (require 'use-package)
 
-(setq use-package-always-ensure t) ;; Always ensure packages
+(setq use-package-always-ensure t) ; Always ensure packages
 
-(setq comp-deferred-compilation t) ;; Enable Deferred compilation
+;; Performance --------------------------------------------------------------------------------
 
-;; Turn off some unneeded UI elements
-(menu-bar-mode -1)  ; Leave this one on if you're a beginner!
-(tool-bar-mode -1)
-(scroll-bar-mode -1)
+(setq comp-deferred-compilation t) ; Enable Deferred compilation
 
-(global-display-line-numbers-mode 1) ;; Display line numbers in every buffer
-(load-theme 'deeper-blue t) ;; theme
+;; Basic UI configuration ---------------------------------------------------------------------
+
+(setq visible-bell t)  ; Set up the visible bell
+
+(tool-bar-mode -1)     ; Disable the toolbar
+(scroll-bar-mode -1)   ; Disable visible scrollbar
+(tooltip-mode -1)      ; Disable tooltips
+(set-fringe-mode 10)   ; Give some breathing room
+
+(menu-bar-mode -1)     ; Disable the menu bar
+
+(global-display-line-numbers-mode 1) ; Display line numbers in every buffer
+(load-theme 'manoj-dark t)           ; theme
+
+;; Font configuration --------------------------------------------------------------------------
+
+(set-face-attribute 'default nil :height 125)                   ; Set font size
+(set-face-attribute 'default nil :font "Monospace" :height 120) ; Set the font
+
+;; Packages and package configuration ----------------------------------------------------------
 
 (use-package which-key
   :config
@@ -36,23 +53,21 @@
   (markdown-mode-hook . writeroom-mode)
   (org-mode . writeroom-mode))
 
-
 (use-package rainbow-mode
   :hook
   (html-mode-hook . rainbow-mode)
   (css-mode-hook . rainbow-mode)
   (js-mode-hook . rainbow-mode))
 
-(setq pdf-viewer "zathura") ;; set the pdf viewer to zathura 
-(setq doc-view-continuous t) ;; continuous scrolling of pdf documents
+(setq pdf-viewer "zathura")  ; set the pdf viewer to zathura 
+(setq doc-view-continuous t) ; continuous scrolling of pdf documents
 
 (use-package auctex
   :config
   (setq TeX-view-program-list '(("zathura" "zathura %o")))
   (setq TeX-view-program-selection '((output-pdf "zathura"))))
 
-;; Built-in alternative to projectile.el
-(use-package project) ;; Built-in alternative to projectile.el
+(use-package project) ; Built-in alternative to projectile.el
 
 ;; Dashboard
 (use-package dashboard
@@ -77,7 +92,7 @@
 ;; - "path/to/your/image.gif", "path/to/your/image.png", "path/to/your/text.txt" or "path/to/your/image.xbm" which displays whatever gif/image/text/xbm you would prefer
 ;; - a cons of '("path/to/your/image.png" . "path/to/your/text.txt")
 
-;; Download Evil
+;; Download Evil and related packages
 (use-package evil
   :init
   (setq evil-want-keybinding nil)
@@ -155,13 +170,6 @@
   :mode ("\\.md\\'" . markdown-mode)
   :init (setq markdown-command "multimarkdown"))
 
-;; pandoc
-(use-package pandoc-mode
-  :config
-  (setq markdown-command "pandoc")
-  :hook
-  ('markdown-mode-hook . pandoc-mode))
-
 ;; Eglot, more minimal alternative to lsp-mode that is included with newer versions of emacs
 (use-package eglot
   :hook
@@ -193,7 +201,7 @@
  '(ispell-dictionary nil)
  '(org-agenda-files nil)
  '(package-selected-packages
-   '(org-modern which-key evil-commentary pandoc-mode auctex evil-surround move-text rainbow-mode writeroom-mode treemacs-evil key-chord markdown-mode dashboard rainbow-delimiters eglot image-dired+ magit evil-collection treemacs ## company evil)))
+   '(org-modern which-key evil-commentary auctex evil-surround move-text rainbow-mode writeroom-mode treemacs-evil key-chord markdown-mode dashboard rainbow-delimiters eglot image-dired+ magit evil-collection treemacs ## company evil)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
