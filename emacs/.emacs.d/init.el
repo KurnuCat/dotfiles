@@ -10,10 +10,11 @@
   (package-install 'use-package))
 (require 'use-package)
 
-;; Enable deferred compilation
-(setq comp-deferred-compilation t)
+(setq use-package-always-ensure t) ;; Always ensure packages
 
-; Turn off some unneeded UI elements
+(setq comp-deferred-compilation t) ;; Enable Deferred compilation
+
+;; Turn off some unneeded UI elements
 (menu-bar-mode -1)  ; Leave this one on if you're a beginner!
 (tool-bar-mode -1)
 (scroll-bar-mode -1)
@@ -21,19 +22,22 @@
 (global-display-line-numbers-mode 1) ;; Display line numbers in every buffer
 (load-theme 'deeper-blue t) ;; theme
 
+(use-package which-key
+  :config
+  (which-key-mode))
+
 ;; doc-viewer
-(use-package doc-view
-  :ensure t
-  )
+(use-package doc-view)
 
 ;; writeroom-mode
 (use-package writeroom-mode
-  :ensure t
   :config
-  (add-hook 'markdown-mode-hook 'writeroom-mode))
+  :hook
+  (markdown-mode-hook . writeroom-mode)
+  (org-mode . writeroom-mode))
+
 
 (use-package rainbow-mode
-  :ensure t
   :hook
   (html-mode-hook . rainbow-mode)
   (css-mode-hook . rainbow-mode)
@@ -43,18 +47,15 @@
 (setq doc-view-continuous t) ;; continuous scrolling of pdf documents
 
 (use-package auctex
-  :ensure t
   :config
   (setq TeX-view-program-list '(("zathura" "zathura %o")))
   (setq TeX-view-program-selection '((output-pdf "zathura"))))
 
 ;; Built-in alternative to projectile.el
-(use-package project
-  :ensure t)
+(use-package project) ;; Built-in alternative to projectile.el
 
 ;; Dashboard
 (use-package dashboard
-  :ensure t
   :config
   (setq dashboard-banner-logo-title "Welcome to Moisio Emacs!")
   (setq dashboard-startup-banner 1)
@@ -78,42 +79,42 @@
 
 ;; Download Evil
 (use-package evil
-  :ensure t
   :init
   (setq evil-want-keybinding nil)
   :config
   (evil-mode 1))
 
 (use-package evil-collection
-  :ensure t
   :config
   (evil-collection-init))
 
 (use-package evil-surround
-  :ensure t
   :config
   (global-evil-surround-mode 1))
 
-(use-package move-text
-  :ensure t)
+(use-package evil-commentary
+  :config
+  (evil-commentary-mode 1))
+
+(use-package move-text)
 
 (use-package key-chord
-  :ensure t
   :config
   (key-chord-mode 1)
   (key-chord-define evil-insert-state-map "jk" 'evil-normal-state))
 
 ;; Company mode
 (use-package company
-  :ensure t
   :config
   (global-company-mode t))
 
 ;; icomplete, an out of the box alternative for ivy or helm
 (use-package icomplete
-  :ensure t
   :config
   (icomplete-mode t))
+
+;; image-dired+
+(use-package image-dired+)
 
 ;; Open videos with mpv
 (defun open-in-mpv ()
@@ -126,7 +127,6 @@
 
 ;; Org 
 (use-package org
-  :ensure t
   :bind
   (("C-c l" . org-store-link)
    ("C-c a" . org-agenda)
@@ -144,21 +144,19 @@
 (setq org-agenda-start-on-weekday nil)
 (setq org-agenda-start-day 0)
 
+;; org-mode theme
 (use-package org-modern
-  :ensure t
-  :config
-  (add-hook 'org-mode-hook 'org-modern-mode)
-  (add-hook 'org-agenda-finalize-hook 'org-modern-mode))
+  :hook
+  ('org-mode . org-modern-mode)) 
 
 ;; Markdown mode
 (use-package markdown-mode
-  :ensure t
   :mode ("README\\.md\\'" . gfm-mode)
   :mode ("\\.md\\'" . markdown-mode)
   :init (setq markdown-command "multimarkdown"))
 
+;; pandoc
 (use-package pandoc-mode
-  :ensure t
   :config
   (setq markdown-command "pandoc")
   :hook
@@ -166,7 +164,6 @@
 
 ;; Eglot, more minimal alternative to lsp-mode that is included with newer versions of emacs
 (use-package eglot
-  :ensure t
   :hook
   ((python-mode-hook . eglot-ensure)
    (html-mode-hook . eglot-ensure)
@@ -175,20 +172,17 @@
    (sh-mode-hook . eglot-ensure)
    (markdown-mode-hook . eglot-ensure)))
 
-;; Treemacs
-(use-package treemacs
-  :ensure t)
+(use-package magit) ;; magit 
 
-(use-package treemacs-evil
-  :ensure t)
+;; Treemacs
+(use-package treemacs)
+(use-package treemacs-evil)
 
 ;; Rainbow-delimiters
 (use-package rainbow-delimiters
-  :ensure t
   :hook (prog-mode-hook . rainbow-delimiters-mode))
 
-;; Electric-pairs
-(add-hook 'prog-mode-hook 'electric-pair-mode)
+(add-hook 'prog-mode-hook 'electric-pair-mode) ;; autopairs in programming modes with the built-in electric-pairs
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -199,7 +193,7 @@
  '(ispell-dictionary nil)
  '(org-agenda-files nil)
  '(package-selected-packages
-   '(pandoc-mode auctex evil-surround move-text rainbow-mode writeroom-mode treemacs-evil key-chord markdown-mode dashboard rainbow-delimiters eglot image-dired+ magit evil-collection treemacs ## company org-modern evil)))
+   '(org-modern which-key evil-commentary pandoc-mode auctex evil-surround move-text rainbow-mode writeroom-mode treemacs-evil key-chord markdown-mode dashboard rainbow-delimiters eglot image-dired+ magit evil-collection treemacs ## company evil)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
