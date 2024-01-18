@@ -111,7 +111,10 @@
   :config
   (evil-commentary-mode 1))
 
-(use-package move-text)
+(use-package move-text
+  :config
+  (global-set-key (kbd "M-k")   'move-text-up)
+  (global-set-key (kbd "M-j") 'move-text-down))
 
 (use-package key-chord
   :config
