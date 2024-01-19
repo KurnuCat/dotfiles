@@ -1,3 +1,9 @@
+;; Performance --------------------------------------------------------------------------------
+
+(setq gc-cons-threshold most-positive-fixnum) ; Minimize garbage collection during startup
+
+(setq comp-deferred-compilation t)            ; Enable Deferred compilation
+
 ;; Package manager configuration --------------------------------------------------------------
 
 ;; Initialize package sources
@@ -39,58 +45,39 @@
 
 ;; Packages and package configuration ----------------------------------------------------------
 
-(use-package which-key
+;; EAF
+(use-package eaf
+  :load-path "~/.emacs.d/site-lisp/emacs-application-framework"
+  :custom
+  ; See https://github.com/emacs-eaf/emacs-application-framework/wiki/Customization
+  (eaf-browser-continue-where-left-off t)
+  (eaf-browser-enable-adblocker t)
+  (browse-url-browser-function 'eaf-open-browser)
   :config
-  (which-key-mode))
+  (defalias 'browse-web #'eaf-open-browser)
+  (eaf-bind-key scroll_up "C-n" eaf-pdf-viewer-keybinding)
+  (eaf-bind-key scroll_down "C-p" eaf-pdf-viewer-keybinding)
+  (eaf-bind-key take_photo "p" eaf-camera-keybinding)
+  (eaf-bind-key nil "M-q" eaf-browser-keybinding)) ;; unbind, see more in the Wiki
 
-;; doc-viewer
-(use-package doc-view)
+(require 'eaf-browser)
+(require 'eaf-pdf-viewer)
+(require 'eaf-music-player)
+(require 'eaf-video-player)
+(require 'eaf-image-viewer)
+(require 'eaf-rss-reader)
+(require 'eaf-pyqterminal)
+(require 'eaf-markdown-previewer)
+(require 'eaf-org-previewer)
+(require 'eaf-git)
+(require 'eaf-file-manager)
+(require 'eaf-system-monitor)
+(require 'eaf-image-viewer)
 
-;; writeroom-mode
-(use-package writeroom-mode
-  :config
-  :hook
-  (markdown-mode-hook . writeroom-mode)
-  (org-mode . writeroom-mode))
+(setq eaf-enable-debug t)
 
-(use-package rainbow-mode
-  :hook
-  (html-mode-hook . rainbow-mode)
-  (css-mode-hook . rainbow-mode)
-  (js-mode-hook . rainbow-mode))
 
-(setq pdf-viewer "zathura")  ; set the pdf viewer to zathura 
-(setq doc-view-continuous t) ; continuous scrolling of pdf documents
-
-(use-package auctex
-  :config
-  (setq TeX-view-program-list '(("zathura" "zathura %o")))
-  (setq TeX-view-program-selection '((output-pdf "zathura"))))
-
-(use-package project) ; Built-in alternative to projectile.el
-
-;; Dashboard
-(use-package dashboard
-  :config
-  (setq dashboard-banner-logo-title "Welcome to Moisio Emacs!")
-  (setq dashboard-startup-banner 1)
-  (setq dashboard-center-content t)
-  (setq dashboard-items '((recents  . 5)
-                          (bookmarks . 5)
-                          (projects . 5)
-                          (agenda . 5)))
-  (setq dashboard-projects-backend 'project-el)
-
-  (setq dashboard-show-shortcuts t)
-  (dashboard-setup-startup-hook))
-
-;; Value can be 1, 2, 3 or nil
-;; - nil to display no banner
-;; - 'official which displays the official emacs logo
-;; - 'logo which displays an alternative emacs logo
-;; - 1, 2 or 3 which displays one of the text banners
-;; - "path/to/your/image.gif", "path/to/your/image.png", "path/to/your/text.txt" or "path/to/your/image.xbm" which displays whatever gif/image/text/xbm you would prefer
-;; - a cons of '("path/to/your/image.png" . "path/to/your/text.txt")
+;; --- evil-mode related stuff ---
 
 ;; Download Evil and related packages
 (use-package evil
@@ -111,28 +98,69 @@
   :config
   (evil-commentary-mode 1))
 
-(use-package move-text
-  :config
-  (global-set-key (kbd "M-k")   'move-text-up)
-  (global-set-key (kbd "M-j") 'move-text-down))
-
 (use-package key-chord
   :config
   (key-chord-mode 1)
   (key-chord-define evil-insert-state-map "jk" 'evil-normal-state))
+
+;; --- Programming, project management, version control and autocompletion ---
 
 ;; Company mode
 (use-package company
   :config
   (global-company-mode t))
 
+;; Eglot, more minimal alternative to lsp-mode that is included with newer versions of emacs
+
+(use-package eglot
+  :hook
+  ((python-mode-hook . eglot-ensure)
+   (html-mode-hook . eglot-ensure)
+   (css-mode-hook . eglot-ensure)
+   (js-mode-hook . eglot-ensure)
+   (sh-mode-hook . eglot-ensure)
+   (markdown-mode-hook . eglot-ensure)))
+
+(use-package magit) ; magit 
+
+(use-package project) ; Built-in alternative to projectile.el
+
+;; Treemacs
+(use-package treemacs)
+(use-package treemacs-evil)
+
+;; Rainbow-delimiters
+(use-package rainbow-delimiters
+  :hook (prog-mode-hook . rainbow-delimiters-mode))
+
+(add-hook 'prog-mode-hook 'electric-pair-mode) ; autopairs in programming modes with the built-in electric-pairs
+
+;; rainbow-mode for CSS
+(use-package rainbow-mode
+  :hook
+  (html-mode-hook . rainbow-mode)
+  (css-mode-hook . rainbow-mode)
+  (js-mode-hook . rainbow-mode))
+
 ;; icomplete, an out of the box alternative for ivy or helm
 (use-package icomplete
   :config
   (icomplete-mode t))
 
-;; image-dired+
+;; --- File, document management and work---
+
+;; Dired
+(use-package dired
+  :ensure nil
+  :hook
+  (dired-mode . evil-local-mode)
+  :config
+  (evil-define-key 'normal dired-mode-map "l" 'dired-find-alternate-file)
+  (evil-define-key 'normal dired-mode-map "h" 'dired-up-directory))
 (use-package image-dired+)
+
+(eval-after-load "dired"
+  '(define-key dired-mode-map (kbd "C-c C-o") 'open-in-mpv))
 
 ;; Open videos with mpv
 (defun open-in-mpv ()
@@ -140,8 +168,31 @@
   (let ((file (dired-get-filename)))
     (start-process "mpv" nil "mpv" file)))
 
-(eval-after-load "dired"
-  '(define-key dired-mode-map (kbd "C-c C-o") 'open-in-mpv))
+;; Markdown mode
+(use-package markdown-mode
+  :mode ("README\\.md\\'" . gfm-mode)
+  :mode ("\\.md\\'" . markdown-mode)
+  :init (setq markdown-command "multimarkdown"))
+
+;; doc-viewer
+(use-package doc-view)
+(setq doc-view-continuous t) ; continuous scrolling of pdf documents
+(setq pdf-viewer "zathura")  ; set the pdf viewer to zathura 
+
+;; writeroom-mode
+(use-package writeroom-mode
+  :config
+  :hook
+  (markdown-mode-hook . writeroom-mode)
+  (org-mode . writeroom-mode))
+
+;; auctex
+(use-package auctex
+  :config
+  (setq TeX-view-program-list '(("zathura" "zathura %o")))
+  (setq TeX-view-program-selection '((output-pdf "zathura"))))
+
+;; --- org related stuff ---
 
 ;; Org 
 (use-package org
@@ -167,33 +218,46 @@
   :hook
   ('org-mode . org-modern-mode)) 
 
-;; Markdown mode
-(use-package markdown-mode
-  :mode ("README\\.md\\'" . gfm-mode)
-  :mode ("\\.md\\'" . markdown-mode)
-  :init (setq markdown-command "multimarkdown"))
+;; --- Other ---
 
-;; Eglot, more minimal alternative to lsp-mode that is included with newer versions of emacs
-(use-package eglot
-  :hook
-  ((python-mode-hook . eglot-ensure)
-   (html-mode-hook . eglot-ensure)
-   (css-mode-hook . eglot-ensure)
-   (js-mode-hook . eglot-ensure)
-   (sh-mode-hook . eglot-ensure)
-   (markdown-mode-hook . eglot-ensure)))
+;; which-key
+(use-package which-key
+  :config
+  (which-key-mode))
 
-(use-package magit) ;; magit 
+;; For moving text
+(use-package move-text
+  :config
+  (global-set-key (kbd "M-k")   'move-text-up)
+  (global-set-key (kbd "M-j") 'move-text-down))
 
-;; Treemacs
-(use-package treemacs)
-(use-package treemacs-evil)
+;; Dashboard
+(use-package dashboard
+  :config
+  (setq dashboard-banner-logo-title "Welcome to Moisio Emacs!")
+  (setq dashboard-startup-banner 1)
+  (setq dashboard-center-content t)
+  (setq dashboard-items '((recents  . 5)
+                          (bookmarks . 5)
+                          (projects . 5)
+                          (agenda . 5)))
+  (setq dashboard-projects-backend 'project-el)
 
-;; Rainbow-delimiters
-(use-package rainbow-delimiters
-  :hook (prog-mode-hook . rainbow-delimiters-mode))
+  (setq dashboard-show-shortcuts t)
+  (dashboard-setup-startup-hook))
+;; Value can be 1, 2, 3 or nil
+;; - nil to display no banner
+;; - 'official which displays the official emacs logo
+;; - 'logo which displays an alternative emacs logo
+;; - 1, 2 or 3 which displays one of the text banners
+;; - "path/to/your/image.gif", "path/to/your/image.png", "path/to/your/text.txt" or "path/to/your/image.xbm" which displays whatever gif/image/text/xbm you would prefer
+;; - a cons of '("path/to/your/image.png" . "path/to/your/text.txt")
 
-(add-hook 'prog-mode-hook 'electric-pair-mode) ;; autopairs in programming modes with the built-in electric-pairs
+
+;; lower threshold back to 0 MiB (default is 800kB)
+(add-hook 'emacs-startup-hook
+	  (lambda ()
+	    (setq gc-cons-threshold (expt 2 23))))
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
@@ -211,3 +275,4 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
+(put 'dired-find-alternate-file 'disabled nil)
