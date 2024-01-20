@@ -221,11 +221,6 @@ input type:touchpad {
     natural_scroll enabled
 }
 
-# Corsair M65 Pro mouse configuration
-input "6940:6930:Corsair_Corsair_M65_RGB_Gaming_Mouse" {
-    left_handed enabled
-}
-
 # Swipe gesture to switch workspace
 bindgesture swipe:right workspace prev
 bindgesture swipe:left workspace next
