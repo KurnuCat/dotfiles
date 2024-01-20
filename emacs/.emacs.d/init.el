@@ -45,6 +45,8 @@
 
 ;; Packages and package configuration ----------------------------------------------------------
 
+;; ---------- Emacs application framework ----------
+
 ;; EAF
 (use-package eaf
   :load-path "~/.emacs.d/site-lisp/emacs-application-framework"
@@ -76,8 +78,7 @@
 
 (setq eaf-enable-debug t)
 
-
-;; --- evil-mode related stuff ---
+;; ---------- evil-mode related stuff ----------
 
 ;; Download Evil and related packages
 (use-package evil
@@ -103,7 +104,7 @@
   (key-chord-mode 1)
   (key-chord-define evil-insert-state-map "jk" 'evil-normal-state))
 
-;; --- Programming, project management, version control and autocompletion ---
+;; ---------- Programming, project management, version control and autocompletion ----------
 
 ;; Company mode
 (use-package company
@@ -121,9 +122,9 @@
    (sh-mode-hook . eglot-ensure)
    (markdown-mode-hook . eglot-ensure)))
 
-(use-package magit) ; magit 
+(use-package magit)      ; magit 
 
-(use-package project) ; Built-in alternative to projectile.el
+(use-package project)    ; Built-in alternative to projectile.el
 
 ;; Treemacs
 (use-package treemacs)
@@ -147,7 +148,7 @@
   :config
   (icomplete-mode t))
 
-;; --- File, document management and work---
+;; ---------- File, document management and work ----------
 
 ;; Dired
 (use-package dired
@@ -159,14 +160,13 @@
   (evil-define-key 'normal dired-mode-map "h" 'dired-up-directory))
 (use-package image-dired+)
 
-(eval-after-load "dired"
-  '(define-key dired-mode-map (kbd "C-c C-o") 'open-in-mpv))
-
 ;; Open videos with mpv
 (defun open-in-mpv ()
   (interactive)
   (let ((file (dired-get-filename)))
     (start-process "mpv" nil "mpv" file)))
+(eval-after-load "dired"
+  '(define-key dired-mode-map (kbd "C-c C-o") 'open-in-mpv))
 
 ;; Markdown mode
 (use-package markdown-mode
@@ -192,7 +192,7 @@
   (setq TeX-view-program-list '(("zathura" "zathura %o")))
   (setq TeX-view-program-selection '((output-pdf "zathura"))))
 
-;; --- org related stuff ---
+;; ---------- org related stuff ----------
 
 ;; Org 
 (use-package org
@@ -218,7 +218,7 @@
   :hook
   ('org-mode . org-modern-mode)) 
 
-;; --- Other ---
+;; ---------- Other packages ----------
 
 ;; which-key
 (use-package which-key
@@ -254,10 +254,14 @@
 ;; - a cons of '("path/to/your/image.png" . "path/to/your/text.txt")
 
 
+;; Performance --------------------------------------------------------------
+
 ;; lower threshold back to 0 MiB (default is 800kB)
 (add-hook 'emacs-startup-hook
 	  (lambda ()
 	    (setq gc-cons-threshold (expt 2 23))))
+ 
+;; custom -------------------------------------------------------------------
 
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
