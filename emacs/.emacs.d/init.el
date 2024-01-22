@@ -45,39 +45,6 @@
 
 ;; Packages and package configuration ----------------------------------------------------------
 
-;; ---------- Emacs application framework ----------
-
-;; EAF
-(use-package eaf
-  :load-path "~/.emacs.d/site-lisp/emacs-application-framework"
-  :custom
-  ; See https://github.com/emacs-eaf/emacs-application-framework/wiki/Customization
-  (eaf-browser-continue-where-left-off t)
-  (eaf-browser-enable-adblocker t)
-  (browse-url-browser-function 'eaf-open-browser)
-  :config
-  (defalias 'browse-web #'eaf-open-browser)
-  (eaf-bind-key scroll_up "C-n" eaf-pdf-viewer-keybinding)
-  (eaf-bind-key scroll_down "C-p" eaf-pdf-viewer-keybinding)
-  (eaf-bind-key take_photo "p" eaf-camera-keybinding)
-  (eaf-bind-key nil "M-q" eaf-browser-keybinding)) ;; unbind, see more in the Wiki
-
-(require 'eaf-browser)
-(require 'eaf-pdf-viewer)
-(require 'eaf-music-player)
-(require 'eaf-video-player)
-(require 'eaf-image-viewer)
-(require 'eaf-rss-reader)
-(require 'eaf-pyqterminal)
-(require 'eaf-markdown-previewer)
-(require 'eaf-org-previewer)
-(require 'eaf-git)
-(require 'eaf-file-manager)
-(require 'eaf-system-monitor)
-(require 'eaf-image-viewer)
-
-(setq eaf-enable-debug t)
-
 ;; ---------- evil-mode related stuff ----------
 
 ;; Download Evil and related packages
@@ -112,7 +79,6 @@
   (global-company-mode t))
 
 ;; Eglot, more minimal alternative to lsp-mode that is included with newer versions of emacs
-
 (use-package eglot
   :hook
   ((python-mode-hook . eglot-ensure)
@@ -150,7 +116,7 @@
 
 ;; ---------- File, document management and work ----------
 
-;; Dired
+;; dired
 (use-package dired
   :ensure nil
   :hook
@@ -168,7 +134,7 @@
 (eval-after-load "dired"
   '(define-key dired-mode-map (kbd "C-c C-o") 'open-in-mpv))
 
-;; Markdown mode
+;; markdown-mode
 (use-package markdown-mode
   :mode ("README\\.md\\'" . gfm-mode)
   :mode ("\\.md\\'" . markdown-mode)
@@ -194,7 +160,7 @@
 
 ;; ---------- org related stuff ----------
 
-;; Org 
+;; org 
 (use-package org
   :bind
   (("C-c l" . org-store-link)
