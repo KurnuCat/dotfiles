@@ -114,7 +114,7 @@
   :config
   (icomplete-mode t))
 
-;; ---------- File, document management and work ----------
+;; ---------- File and document management ----------
 
 ;; dired
 (use-package dired
@@ -182,7 +182,18 @@
 ;; org-mode theme
 (use-package org-modern
   :hook
-  ('org-mode . org-modern-mode)) 
+  ('org-mode . org-modern-mode))
+
+;; ---------- RSS, Music----------
+
+;; emms
+(use-package emms
+  :config
+  (emms-all)
+  (setq emms-player-list '(emms-player-mpv))
+  (setq emms-source-file-default-directory "~/sync/music/")
+  (global-set-key (kbd "C-c +") 'emms-volume-mode-plus)
+  (global-set-key (kbd "C-c -") 'emms-volume-mode-minus))
 
 ;; ---------- Other packages ----------
 
@@ -238,7 +249,7 @@
  '(ispell-dictionary nil)
  '(org-agenda-files nil)
  '(package-selected-packages
-   '(org-modern which-key evil-commentary auctex evil-surround move-text rainbow-mode writeroom-mode treemacs-evil key-chord markdown-mode dashboard rainbow-delimiters eglot image-dired+ magit evil-collection treemacs ## company evil)))
+   '(emms org-modern which-key evil-commentary auctex evil-surround move-text rainbow-mode writeroom-mode treemacs-evil key-chord markdown-mode dashboard rainbow-delimiters eglot image-dired+ magit evil-collection treemacs ## company evil)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
