@@ -38,6 +38,8 @@
 (global-display-line-numbers-mode 1) ; Display line numbers in every buffer
 (load-theme 'manoj-dark t)           ; theme
 
+(global-prettify-symbols-mode 1)     ; Pretty lambdas
+
 ;; Font configuration --------------------------------------------------------------------------
 
 (set-face-attribute 'default nil :height 125)                   ; Set font size
@@ -70,6 +72,8 @@
   :config
   (key-chord-mode 1)
   (key-chord-define evil-insert-state-map "jk" 'evil-normal-state))
+
+(evil-set-initial-state 'term-mode 'emacs) ; Turn evil-mode off in terminals
 
 ;; ---------- Programming, project management, version control and autocompletion ----------
 
@@ -109,93 +113,21 @@
   (css-mode-hook . rainbow-mode)
   (js-mode-hook . rainbow-mode))
 
+;; flymake, out of the box alternative for flycheck
+(use-package flymake
+  :hook (prog-mode-hook))
+
 ;; icomplete, an out of the box alternative for ivy or helm
 (use-package icomplete
   :config
   (icomplete-mode t))
 
-;; ---------- File and document management ----------
-
-;; dired
-(use-package dired
-  :ensure nil
-  :hook
-  (dired-mode . evil-local-mode)
-  :config
-  (evil-define-key 'normal dired-mode-map "l" 'dired-find-alternate-file)
-  (evil-define-key 'normal dired-mode-map "h" 'dired-up-directory))
-(use-package image-dired+)
-
-;; Open videos with mpv
-(defun open-in-mpv ()
-  (interactive)
-  (let ((file (dired-get-filename)))
-    (start-process "mpv" nil "mpv" file)))
-(eval-after-load "dired"
-  '(define-key dired-mode-map (kbd "C-c C-o") 'open-in-mpv))
-
-;; markdown-mode
-(use-package markdown-mode
-  :mode ("README\\.md\\'" . gfm-mode)
-  :mode ("\\.md\\'" . markdown-mode)
-  :init (setq markdown-command "multimarkdown"))
-
-;; doc-viewer
-(use-package doc-view)
-(setq doc-view-continuous t) ; continuous scrolling of pdf documents
-(setq pdf-viewer "zathura")  ; set the pdf viewer to zathura 
-
-;; writeroom-mode
-(use-package writeroom-mode
-  :config
-  :hook
-  (markdown-mode-hook . writeroom-mode)
-  (org-mode . writeroom-mode))
-
-;; auctex
-(use-package auctex
-  :config
-  (setq TeX-view-program-list '(("zathura" "zathura %o")))
-  (setq TeX-view-program-selection '((output-pdf "zathura"))))
-
-;; ---------- org related stuff ----------
-
-;; org 
-(use-package org
-  :bind
-  (("C-c l" . org-store-link)
-   ("C-c a" . org-agenda)
-   ("C-c c" . org-capture)))
-
-(setq org-agenda-files '("~/sync/org")) ;; org-agenda file path
-
-;; Define custom agenda views
-(setq org-agenda-custom-commands
-      '(("s" "Saved agenda view" tags "+CATEGORY=\"Saved\""
-         ((agenda "")
-          (alltodo "")))))
-
-;; Set agenda start day to today
-(setq org-agenda-start-on-weekday nil)
-(setq org-agenda-start-day 0)
-
-;; org-mode theme
-(use-package org-modern
-  :hook
-  ('org-mode . org-modern-mode))
-
-;; ---------- RSS, Music----------
-
-;; emms
-(use-package emms
-  :config
-  (emms-all)
-  (setq emms-player-list '(emms-player-mpv))
-  (setq emms-source-file-default-directory "~/sync/music/")
-  (global-set-key (kbd "C-c +") 'emms-volume-mode-plus)
-  (global-set-key (kbd "C-c -") 'emms-volume-mode-minus))
-
 ;; ---------- Other packages ----------
+
+;; golden-ratio
+(use-package golden-ratio
+  :config
+  (golden-ratio-mode 1))
 
 ;; which-key
 (use-package which-key
@@ -211,7 +143,7 @@
 ;; Dashboard
 (use-package dashboard
   :config
-  (setq dashboard-banner-logo-title "Welcome to Moisio Emacs!")
+  (setq dashboard-banner-logo-title "Welcome to Emacs!")
   (setq dashboard-startup-banner 1)
   (setq dashboard-center-content t)
   (setq dashboard-items '((recents  . 5)
@@ -230,7 +162,6 @@
 ;; - "path/to/your/image.gif", "path/to/your/image.png", "path/to/your/text.txt" or "path/to/your/image.xbm" which displays whatever gif/image/text/xbm you would prefer
 ;; - a cons of '("path/to/your/image.png" . "path/to/your/text.txt")
 
-
 ;; Performance --------------------------------------------------------------
 
 ;; lower threshold back to 0 MiB (default is 800kB)
@@ -247,9 +178,10 @@
  ;; If there is more than one, they won't work right.
  '(icomplete-mode t)
  '(ispell-dictionary nil)
+ '(line-number-mode nil)
  '(org-agenda-files nil)
  '(package-selected-packages
-   '(emms org-modern which-key evil-commentary auctex evil-surround move-text rainbow-mode writeroom-mode treemacs-evil key-chord markdown-mode dashboard rainbow-delimiters eglot image-dired+ magit evil-collection treemacs ## company evil)))
+   '(golden-ratio which-key evil-commentary evil-surround move-text rainbow-mode treemacs-evil key-chord dashboard rainbow-delimiters eglot magit evil-collection treemacs ## company evil)))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
