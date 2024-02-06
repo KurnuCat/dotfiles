@@ -1,13 +1,13 @@
-#!/bin/bash 
+#!/bin/bash
 
 # Treat unset variables as an error
-set -o nounset 
+set -o nounset
 
-# What to backup. 
+# What to backup.
 backup_files="~/sync/ ~/.config/ ~/downloads"
 
 # Where to backup to.
-dest="/home/pyry/"
+dest="/home/$USER/"
 
 # Create archive filename.
 day=$(date +%A)
