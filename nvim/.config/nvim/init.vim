@@ -69,23 +69,20 @@ endif
 
 " For use of vim-plug plugin manager
 call plug#begin()
-" Plug 'maxboisvert/vim-simple-complete'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'junegunn/goyo.vim'
 Plug 'vimwiki/vimwiki'
 Plug 'xuhdev/vim-latex-live-preview', { 'for': 'tex' }
 Plug 'preservim/nerdtree'
 Plug 'ap/vim-css-color'
-Plug 'jreybert/vimagit'
-" Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-commentary'
 Plug 'vim-airline/vim-airline'
 Plug 'junegunn/fzf'
-Plug 'LunarWatcher/auto-pairs' " More popular alternative is jiangmia/auto-pairs
+Plug 'LunarWatcher/auto-pairs'
 Plug 'matze/vim-move'
-Plug 'mhinz/vim-startify' " nvimdev/dashboard-nvim is a good alternative for this
-" Plug 'rcarriga/nvim-notify'
+Plug 'mhinz/vim-startify'
 call plug#end()
 
 " Autopairs toggle
