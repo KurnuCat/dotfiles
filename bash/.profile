@@ -1,9 +1,3 @@
-# ~/.profile: executed by the command interpreter for login shells.
-# This file is not read by bash(1), if ~/.bash_profile or ~/.bash_login
-# exists.
-# see /usr/share/doc/bash/examples/startup-files for examples.
-# the files are located in the bash-doc package.
-
 # the default umask is set in /etc/profile; for setting the umask
 # for ssh logins, install and configure the libpam-umask package.
 #umask 022
@@ -16,23 +10,24 @@
 
 # Wayland
 #export XDG_CURRENT_DESKTOP="sway"
-#export MOZ_ENABLE_WAYLAND="1" # Firefox/Librewolf wayland session
-#export XDG_SESSION_TYPE="wayland" # Session type
-#export QT_QPA_PLATFORM="wayland" # Make QT applications respect session type
-#export WLR_NO_HARDWARE_CURSORS="1" # Fixes cursor problems with the proprietary Nvidia driver
-#export WLR_RENDERER="vulkan" # Use vulkan as renderer to fix screen flickering with Nvidia driver
-#export XWAYLAND_NO_GLAMOR="1" # Fixes window flickering with Nvidia driver
+#export MOZ_ENABLE_WAYLAND="1"  Firefox/Librewolf wayland session
+#export XDG_SESSION_TYPE="wayland"  Session type
+#export QT_QPA_PLATFORM="wayland"  Make QT applications respect session type
+#export WLR_NO_HARDWARE_CURSORS="1"  Fixes cursor problems with the proprietary Nvidia driver
+#export WLR_RENDERER="vulkan"  Use vulkan as renderer to fix screen flickering with Nvidia driver
+#export XWAYLAND_NO_GLAMOR="1"  Fixes window flickering with Nvidia driver
+#export ANKI_WAYLAND="1"  Forces anki to use wayland
 
-# Anki
-#export ANKI_WAYLAND="1" # Make anki use wayland
+# QT5 theming
+export QT_QPA_PLATFORMTHEME="qt5ct"
 
 # Path
 export PATH=$PATH:/home/user/.local/bin
 
 # Default programs:
 export EDITOR="nvim"
-export TERMINAL="gnome-terminal"
-export TERMINAL_PROG="gnome-terminal"
+export TERMINAL="st"
+export TERMINAL_PROG="st"
 export BROWSER="librewolf"
 export READER="zathura"
 
@@ -78,7 +73,7 @@ export LESS_TERMCAP_se="$(printf '%b' '')"
 export LESS_TERMCAP_us="$(printf '%b' '')"
 export LESS_TERMCAP_ue="$(printf '%b' '')"
 export LESSOPEN="| /usr/bin/highlight -O ansi %s 2>/dev/null"
-export QT_QPA_PLATFORMTHEME="gtk2" # Have QT use gtk2 theme.
+# export QT_QPA_PLATFORMTHEME="gtk2"  Have QT use gtk2 theme.
 export MOZ_USE_XINPUT2="1" # Mozilla smooth scrolling/touchpads.
 export AWT_TOOLKIT="MToolkit wmname LG3D" # May have to install wmname
 export _JAVA_AWT_WM_NONREPARENTING=1 # Fix for Java applications in dwm
@@ -96,7 +91,7 @@ if [ -d "$HOME/bin" ] ; then
     PATH="$HOME/bin:$PATH"
 fi
 
-# set PATH so it includes user's private bin if it exists
-if [ -d "$HOME/.local/bin" ] ; then
-    PATH="$HOME/.local/bin:$PATH"
+# autostart x at login
+if [ -z "$DISPLAY" ] && [ "$XDG_VTNR" = 1 ]; then
+  exec startx
 fi
